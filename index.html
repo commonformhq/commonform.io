@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COMMONFORM.EXE</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Backgrounds — deep navy/purple */
+      --bg:        #0d0b14;
+      --bg-alt:    #131020;
+      --panel:     #1a1629;
+      --panel-2:   #201c34;
+      --panel-3:   #261f3d;
+
+      /* Text */
+      --text:      #ede8ff;
+      --muted:     #8b80b8;
+      --dim:       #4e4672;
+
+      /* Accents — softer, pastel-shifted */
+      --cyan:      #7ee8d8;
+      --lavender:  #b8a9f5;
+      --pink:      #f5a9d0;
+      --sage:      #a8d8b0;
+      --peach:     #f5c9a0;
+
+      /* Structural */
+      --black:     #07060d;
+      --border:    #2e2850;
+      --line:      rgba(184,169,245,0.12);
+
+      /* Shadows use the darkest navy, not pure black */
+      --shadow-sm: 3px 3px 0px 0px #07060d;
+      --shadow-md: 6px 6px 0px 0px #07060d;
+      --shadow-lg: 10px 10px 0px 0px #07060d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* Subtle dot-matrix grid */
+      background-image:
+        radial-gradient(circle, rgba(126,232,216,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* CRT scan-line shimmer */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+    }
+
+    /* Soft ambient glow top-left */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: -200px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(126,232,216,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, calc(100% - 2rem));
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-alt);
+      border-bottom: 2px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+    }
+
+    .brand-title .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1em;
+      background: var(--cyan);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .brand-subtitle {
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .nav-links a {
+      border: 2px solid var(--border);
+      background: var(--panel);
+      color: var(--lavender);
+      padding: 0.55rem 0.9rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: var(--shadow-sm);
+      transition: 100ms linear;
+    }
+
+    .nav-links a:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-md);
+      background: var(--panel-2);
+      border-color: var(--lavender);
+      color: var(--text);
+    }
+
+    .nav-links a:active {
+      transform: translate(3px, 3px);
+      box-shadow: none;
+    }
+
+    /* ─── HERO ────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: 6rem 0 5rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .hero-ascii {
+      font-family: 'DM Mono', monospace;
+      color: var(--cyan);
+      position: absolute;
+      right: 0;
+      top: 30px;
+      opacity: 0.12;
+      transform: rotate(-2deg);
+      pointer-events: none;
+      border: 1px dashed rgba(126,232,216,0.15);
+      padding: 1rem;
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      border: 2px solid var(--cyan);
+      padding: 0.45rem 0.9rem;
+      margin-bottom: 2rem;
+      background: rgba(126,232,216,0.05);
+      box-shadow: var(--shadow-sm);
+    }
+
+    h1 {
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      line-height: 0.92;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      text-shadow: 5px 5px 0px var(--black);
+    }
+
+    h1 .highlight {
+      color: var(--lavender);
+      background: rgba(184,169,245,0.08);
+      border: 2px solid var(--lavender);
+      padding: 0 0.35rem;
+      display: inline-block;
+      transform: rotate(-1.5deg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.95;
+      max-width: 640px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.65rem;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-tag.cyan   { color: var(--cyan);     border-color: var(--cyan);     background: rgba(126,232,216,0.06); }
+    .hero-tag.pink   { color: var(--pink);     border-color: var(--pink);     background: rgba(245,169,208,0.06); transform: rotate(-1deg); }
+    .hero-tag.lav    { color: var(--lavender); border-color: var(--lavender); background: rgba(184,169,245,0.06); transform: rotate(1deg); }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .button {
+      border: 2px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 0.85rem 1.2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 100ms linear;
+      box-shadow: var(--shadow-md);
+    }
+
+    .button:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--lavender);
+      color: var(--lavender);
+      background: var(--panel-3);
+    }
+
+    .button:active {
+      transform: translate(4px, 4px);
+      box-shadow: none;
+    }
+
+    .button.primary {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(126,232,216,0.06);
+    }
+
+    .button.primary:hover {
+      background: rgba(126,232,216,0.12);
+      border-color: var(--cyan);
+      color: var(--text);
+    }
+
+    /* ─── NOTES PANEL (aside) ─────────────────────────────── */
+    .notes-panel {
+      border: 2px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 1.8rem;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      transform: rotate(0.8deg);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .notes-panel::before {
+      content: '// field_notes.txt';
+      position: absolute;
+      top: -11px;
+      left: 14px;
+      background: var(--bg);
+      padding: 0 0.5rem;
+      color: var(--dim);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+    }
+
+    .notes-panel p {
+      color: var(--muted);
+      line-height: 2;
+      font-size: 0.83rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .notes-panel p:last-child { margin-bottom: 0; }
+
+    .notes-panel .accent-cyan   { color: var(--cyan); }
+    .notes-panel .accent-pink   { color: var(--pink); }
+    .notes-panel .accent-lav    { color: var(--lavender); }
+
+    /* ─── SECTIONS ────────────────────────────────────────── */
+    section { padding-bottom: 5rem; }
+
+    .section-title {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title h2 .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      color: var(--lavender);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.85;
+      max-width: 700px;
+    }
+
+    /* ─── INFO BOX ────────────────────────────────────────── */
+    .info-box {
+      border: 2px solid var(--border);
+      background: var(--panel);
+      padding: 1.6rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .info-box h4 {
+      color: var(--cyan);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+    }
+
+    .info-box p {
+      color: var(--muted);
+      line-height: 2;
+      font-size: 0.83rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ─── PROJECTS ────────────────────────────────────────── */
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .project {
+      border: 2px solid var(--border);
+      background: var(--panel);
+      padding: 1.6rem;
+      position: relative;
+      min-height: 220px;
+      transition: 140ms linear;
+      box-shadow: var(--shadow-md);
+    }
+
+    .project:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--lavender);
+      background: var(--panel-2);
+    }
+
+    .project::after {
+      content: '//';
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--dim);
+    }
+
+    .project h3 {
+      font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+      margin-bottom: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    .project p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.85;
+      margin-bottom: 1.2rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      background: var(--panel-3);
+      border: 2px solid var(--border);
+      color: var(--lavender);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── COMMIT PANEL ────────────────────────────────────── */
+    .commit-panel {
+      border: 2px solid var(--border);
+      background: var(--bg-alt);
+      box-shadow: var(--shadow-lg);
+      transform: rotate(-0.3deg);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .commit-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.3rem;
+      border-bottom: 2px solid var(--border);
+      background: var(--panel);
+    }
+
+    .commit-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--lavender);
+    }
+
+    .commit-status {
+      color: var(--cyan);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+    }
+
+    .commit-item {
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      gap: 1rem;
+      padding: 1rem 1.3rem;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .commit-item:last-child { border-bottom: none; }
+
+    .repo-name {
+      color: var(--pink);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    .commit-message strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .commit-message span {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .commit-link {
+      border: 2px solid var(--border);
+      background: var(--panel);
+      color: var(--lavender);
+      padding: 0.45rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: var(--shadow-sm);
+      transition: 100ms linear;
+    }
+
+    .commit-link:hover {
+      border-color: var(--lavender);
+      background: var(--panel-2);
+      transform: translate(-2px,-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 3rem 0;
+      margin-top: 2rem;
+      color: var(--dim);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.9;
+    }
+
+    footer a:hover { color: var(--muted); }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .hero-ascii { display: none; }
+      .commit-item { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .nav { flex-direction: column; align-items: flex-start; }
+      h1 { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="nav">
+        <div class="brand">
+          <div class="brand-title">COMMONFORM.EXE<span class="cursor"></span></div>
+          <div class="brand-subtitle">// independent systems workshop</div>
+        </div>
+
+        <div class="nav-links">
+          <a href="https://discuss.commonform.io" target="_blank" rel="noopener noreferrer">Forums</a>
+          <a href="https://repo.commonform.io" target="_blank" rel="noopener noreferrer">Repositories</a>
+          <a href="#projects">Projects</a>
+          <a href="#activity">Activity</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-ascii">
+<pre>╔════════════════════════════════╗
+║ COMMONFORM // PUBLIC NODE      ║
+║ STATUS: INDEPENDENT            ║
+║ BUILD: MAINTAINED MANUALLY     ║
+║ ACCESS: OPEN                   ║
+╚════════════════════════════════╝</pre>
+      </div>
+
+      <div>
+        <div class="eyebrow">pastel infrastructure • repairable systems • independent software</div>
+
+        <h1>
+          Software built<br>
+          carefully,<br>
+          <span class="highlight">without permission.</span>
+        </h1>
+
+        <p class="hero-copy">
+          Commonform is a small independent software workshop focused on communications
+          infrastructure, privacy tooling, protocol research, and durable self-hosted
+          systems. The goal is not scale at all costs. The goal is software that remains
+          understandable years later.
+        </p>
+
+        <div class="hero-tags">
+          <span class="hero-tag cyan">independent web</span>
+          <span class="hero-tag pink">human-maintained</span>
+          <span class="hero-tag lav">long-term systems</span>
+        </div>
+
+        <div class="hero-buttons">
+          <a class="button primary" href="https://repo.commonform.io" target="_blank" rel="noopener noreferrer">Browse Repositories</a>
+          <a class="button" href="https://discuss.commonform.io" target="_blank" rel="noopener noreferrer">Join Discussions</a>
+        </div>
+      </div>
+
+      <aside class="notes-panel">
+        <p><span class="accent-cyan">[notes]</span> infrastructure should remain understandable.</p>
+        <p>public repositories synchronized.</p>
+        <p>documentation written for humans first.</p>
+        <p>maintaining systems intended to last.</p>
+        <p><span class="accent-pink">status:</span> active development.</p>
+      </aside>
+    </section>
+
+    <section>
+      <div class="info-box" style="transform:rotate(-0.3deg); max-width:860px;">
+        <h4>notes.txt</h4>
+        <p>
+          Commonform is intentionally small. Most projects are written incrementally over long
+          periods of time rather than optimized for launch cycles, engagement metrics, or trend
+          alignment.
+        </p>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-title">
+        <h2><span class="label">// projects.list</span>Projects & Subsidiaries</h2>
+        <p>
+          Current work ranges from federated communications systems and privacy infrastructure
+          to payment protocols and experimental automation tooling.
+        </p>
+      </div>
+
+      <div class="projects">
+        <article class="project">
+          <h3>AsterChat</h3>
+          <p>Federated communications platform designed around self-hosting, extensibility, and durable message delivery.</p>
+          <div class="tags">
+            <span class="tag">Messaging</span>
+            <span class="tag">Federation</span>
+            <span class="tag">Tauri</span>
+          </div>
+        </article>
+
+        <article class="project">
+          <h3>VeriFi</h3>
+          <p>Independent anti-abuse verification platform focused on privacy-preserving human verification systems.</p>
+          <div class="tags">
+            <span class="tag">Security</span>
+            <span class="tag">Privacy</span>
+            <span class="tag">Web</span>
+          </div>
+        </article>
+
+        <article class="project">
+          <h3>SecureIRC</h3>
+          <p>Encrypted IRC-inspired communications stack with federation support and modern cryptography.</p>
+          <div class="tags">
+            <span class="tag">IRC</span>
+            <span class="tag">Encryption</span>
+            <span class="tag">Rust</span>
+          </div>
+        </article>
+
+        <article class="project">
+          <h3>Cardinal Protocol</h3>
+          <p>Experimental programmable payments and escrow infrastructure for digital asset ecosystems.</p>
+          <div class="tags">
+            <span class="tag">Payments</span>
+            <span class="tag">Fintech</span>
+            <span class="tag">Soroban</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="activity">
+      <div class="section-title">
+        <h2><span class="label">// commit_stream.log</span>Repository Activity</h2>
+        <p>
+          Recent commits retrieved from the Gitea instance via public API.
+        </p>
+      </div>
+
+      <div class="commit-panel">
+        <div class="commit-header">
+          <h3>Global Commit Stream</h3>
+          <div class="commit-status" id="commit-status">initializing feed...</div>
+        </div>
+
+        <div id="commit-list">
+          <div class="commit-item">
+            <div class="repo-name">system</div>
+            <div class="commit-message">
+              <strong>Waiting for repository activity...</strong>
+              <span>The feed will update automatically.</span>
+            </div>
+            <div class="commit-link">booting</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>philosophy.txt</h4>
+          <p>
+            software should be inspectable.<br>
+            infrastructure should be ownable.<br>
+            protocols should outlive trends.<br>
+            communities should not depend on platforms.
+          </p>
+        </div>
+
+        <div class="info-box" style="transform:rotate(0.3deg);">
+          <h4 style="color:var(--pink);">network_status.txt</h4>
+          <p>
+            repositories synchronized.<br>
+            forum node reachable.<br>
+            experimental systems active.<br>
+            documentation in progress.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        COMMONFORM.EXE<br>
+        built slowly and maintained manually.
+      </div>
+
+      <div>
+        <a href="https://repo.commonform.io">repo.commonform.io</a><br>
+        <a href="https://discuss.commonform.io">discuss.commonform.io</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const GITEA_BASE = 'https://repo.commonform.io';
+
+    const repositories = [
+      { owner: 'commonform', repo: 'asterchat' },
+      { owner: 'commonform', repo: 'verifi' },
+      { owner: 'commonform', repo: 'secureirc' },
+      { owner: 'commonform', repo: 'corepilot' }
+    ];
+
+    const commitList = document.getElementById('commit-list');
+    const commitStatus = document.getElementById('commit-status');
+
+    async function requestJson(url) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Accept': 'application/json' },
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    async function fetchCommits() {
+      commitStatus.textContent = 'syncing repositories...';
+
+      const requests = repositories.map(async repository => {
+        const url = `${GITEA_BASE}/api/v1/repos/${repository.owner}/${repository.repo}/commits?limit=3`;
+        try {
+          const commits = await requestJson(url);
+          return commits.map(commit => ({
+            repository: repository.repo,
+            message: commit.commit?.message?.split('\n')[0] || 'commit update',
+            author: commit.commit?.author?.name || 'unknown',
+            date: commit.commit?.author?.date || new Date().toISOString(),
+            sha: commit.sha || 'unknown',
+            url: commit.html_url || '#'
+          }));
+        } catch (error) {
+          console.warn(`Unable to fetch ${repository.repo}:`, error.message);
+          return [];
+        }
+      });
+
+      const results = await Promise.allSettled(requests);
+      const commits = [];
+      results.forEach(result => {
+        if (result.status === 'fulfilled') commits.push(...result.value);
+      });
+      commits.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (!commits.length) { renderFallback(); return; }
+      renderCommits(commits.slice(0, 16));
+      commitStatus.textContent = `live feed active • ${commits.length} commits indexed`;
+    }
+
+    function renderFallback() {
+      commitStatus.textContent = 'repository feed unavailable';
+      commitList.innerHTML = `
+        <div class="commit-item">
+          <div class="repo-name">offline</div>
+          <div class="commit-message">
+            <strong>Unable to retrieve repository activity.</strong>
+            <span>Repositories may not exist yet, the Gitea API may be unreachable, or CORS is disabled on the server.</span>
+          </div>
+          <div class="commit-link">idle</div>
+        </div>
+      `;
+    }
+
+    function renderCommits(commits) {
+      commitList.innerHTML = commits.map(commit => `
+        <div class="commit-item">
+          <div class="repo-name">${escapeHtml(commit.repository)}</div>
+          <div class="commit-message">
+            <strong>${escapeHtml(commit.message)}</strong>
+            <span>${escapeHtml(commit.author)} • ${formatDate(commit.date)} • ${commit.sha.substring(0, 7)}</span>
+          </div>
+          <a class="commit-link" href="${commit.url}" target="_blank" rel="noopener noreferrer">view →</a>
+        </div>
+      `).join('');
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'unknown date';
+      return new Intl.DateTimeFormat(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      }).format(date);
+    }
+
+    function escapeHtml(input) {
+      const div = document.createElement('div');
+      div.textContent = String(input);
+      return div.innerHTML;
+    }
+
+    fetchCommits();
+    setInterval(fetchCommits, 30000);
+  </script>
+</body>
+</html>
