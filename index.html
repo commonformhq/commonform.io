@@ -1,916 +1,799 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>COMMONFORM.EXE</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      /* Backgrounds — deep navy/purple */
-      --bg:        #0d0b14;
-      --bg-alt:    #131020;
-      --panel:     #1a1629;
-      --panel-2:   #201c34;
-      --panel-3:   #261f3d;
-
-      /* Text */
-      --text:      #ede8ff;
-      --muted:     #8b80b8;
-      --dim:       #4e4672;
-
-      /* Accents — softer, pastel-shifted */
-      --cyan:      #7ee8d8;
-      --lavender:  #b8a9f5;
-      --pink:      #f5a9d0;
-      --sage:      #a8d8b0;
-      --peach:     #f5c9a0;
-
-      /* Structural */
-      --black:     #07060d;
-      --border:    #2e2850;
-      --line:      rgba(184,169,245,0.12);
-
-      /* Shadows use the darkest navy, not pure black */
-      --shadow-sm: 3px 3px 0px 0px #07060d;
-      --shadow-md: 6px 6px 0px 0px #07060d;
-      --shadow-lg: 10px 10px 0px 0px #07060d;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Syne', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      /* Subtle dot-matrix grid */
-      background-image:
-        radial-gradient(circle, rgba(126,232,216,0.06) 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-
-    /* CRT scan-line shimmer */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
-    }
-
-    /* Soft ambient glow top-left */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px;
-      left: -200px;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(126,232,216,0.06) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    .container {
-      width: min(1180px, calc(100% - 2rem));
-      margin: auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ─── HEADER ──────────────────────────────────────────── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: var(--bg-alt);
-      border-bottom: 2px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 2rem;
-      padding: 1rem 0;
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-    }
-
-    .brand-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 500;
-      color: var(--cyan);
-      letter-spacing: 0.08em;
-    }
-
-    .brand-title .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 1em;
-      background: var(--cyan);
-      margin-left: 2px;
-      vertical-align: middle;
-      animation: blink 1s step-end infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .brand-subtitle {
-      font-family: 'DM Mono', monospace;
-      color: var(--muted);
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-    }
-
-    .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .nav-links a {
-      border: 2px solid var(--border);
-      background: var(--panel);
-      color: var(--lavender);
-      padding: 0.55rem 0.9rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      box-shadow: var(--shadow-sm);
-      transition: 100ms linear;
-    }
-
-    .nav-links a:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: var(--shadow-md);
-      background: var(--panel-2);
-      border-color: var(--lavender);
-      color: var(--text);
-    }
-
-    .nav-links a:active {
-      transform: translate(3px, 3px);
-      box-shadow: none;
-    }
-
-    /* ─── HERO ────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      padding: 6rem 0 5rem;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .hero-ascii {
-      font-family: 'DM Mono', monospace;
-      color: var(--cyan);
-      position: absolute;
-      right: 0;
-      top: 30px;
-      opacity: 0.12;
-      transform: rotate(-2deg);
-      pointer-events: none;
-      border: 1px dashed rgba(126,232,216,0.15);
-      padding: 1rem;
-      font-size: 0.72rem;
-      line-height: 1.45;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      border: 2px solid var(--cyan);
-      padding: 0.45rem 0.9rem;
-      margin-bottom: 2rem;
-      background: rgba(126,232,216,0.05);
-      box-shadow: var(--shadow-sm);
-    }
-
-    h1 {
-      font-size: clamp(3.2rem, 8vw, 7rem);
-      line-height: 0.92;
-      font-weight: 800;
-      margin-bottom: 2rem;
-      text-transform: uppercase;
-      letter-spacing: -0.04em;
-      text-shadow: 5px 5px 0px var(--black);
-    }
-
-    h1 .highlight {
-      color: var(--lavender);
-      background: rgba(184,169,245,0.08);
-      border: 2px solid var(--lavender);
-      padding: 0 0.35rem;
-      display: inline-block;
-      transform: rotate(-1.5deg);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .hero-copy {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.95;
-      max-width: 640px;
-      margin-bottom: 2rem;
-    }
-
-    .hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.65rem;
-      border: 2px solid var(--border);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .hero-tag.cyan   { color: var(--cyan);     border-color: var(--cyan);     background: rgba(126,232,216,0.06); }
-    .hero-tag.pink   { color: var(--pink);     border-color: var(--pink);     background: rgba(245,169,208,0.06); transform: rotate(-1deg); }
-    .hero-tag.lav    { color: var(--lavender); border-color: var(--lavender); background: rgba(184,169,245,0.06); transform: rotate(1deg); }
-
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-
-    .button {
-      border: 2px solid var(--border);
-      background: var(--panel-2);
-      color: var(--text);
-      padding: 0.85rem 1.2rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.82rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      transition: 100ms linear;
-      box-shadow: var(--shadow-md);
-    }
-
-    .button:hover {
-      transform: translate(-3px, -3px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--lavender);
-      color: var(--lavender);
-      background: var(--panel-3);
-    }
-
-    .button:active {
-      transform: translate(4px, 4px);
-      box-shadow: none;
-    }
-
-    .button.primary {
-      border-color: var(--cyan);
-      color: var(--cyan);
-      background: rgba(126,232,216,0.06);
-    }
-
-    .button.primary:hover {
-      background: rgba(126,232,216,0.12);
-      border-color: var(--cyan);
-      color: var(--text);
-    }
-
-    /* ─── NOTES PANEL (aside) ─────────────────────────────── */
-    .notes-panel {
-      border: 2px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      padding: 1.8rem;
-      position: relative;
-      box-shadow: var(--shadow-lg);
-      transform: rotate(0.8deg);
-      font-family: 'DM Mono', monospace;
-    }
-
-    .notes-panel::before {
-      content: '// field_notes.txt';
-      position: absolute;
-      top: -11px;
-      left: 14px;
-      background: var(--bg);
-      padding: 0 0.5rem;
-      color: var(--dim);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-    }
-
-    .notes-panel p {
-      color: var(--muted);
-      line-height: 2;
-      font-size: 0.83rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .notes-panel p:last-child { margin-bottom: 0; }
-
-    .notes-panel .accent-cyan   { color: var(--cyan); }
-    .notes-panel .accent-pink   { color: var(--pink); }
-    .notes-panel .accent-lav    { color: var(--lavender); }
-
-    /* ─── SECTIONS ────────────────────────────────────────── */
-    section { padding-bottom: 5rem; }
-
-    .section-title {
-      margin-bottom: 2.5rem;
-    }
-
-    .section-title h2 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.6rem;
-    }
-
-    .section-title h2 .label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      color: var(--lavender);
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-title p {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.85;
-      max-width: 700px;
-    }
-
-    /* ─── INFO BOX ────────────────────────────────────────── */
-    .info-box {
-      border: 2px solid var(--border);
-      background: var(--panel);
-      padding: 1.6rem;
-      box-shadow: var(--shadow-md);
-      position: relative;
-      font-family: 'DM Mono', monospace;
-    }
-
-    .info-box h4 {
-      color: var(--cyan);
-      margin-bottom: 1rem;
-      font-weight: 500;
-      font-size: 0.82rem;
-      letter-spacing: 0.1em;
-    }
-
-    .info-box p {
-      color: var(--muted);
-      line-height: 2;
-      font-size: 0.83rem;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    /* ─── PROJECTS ────────────────────────────────────────── */
-    .projects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-
-    .project {
-      border: 2px solid var(--border);
-      background: var(--panel);
-      padding: 1.6rem;
-      position: relative;
-      min-height: 220px;
-      transition: 140ms linear;
-      box-shadow: var(--shadow-md);
-    }
-
-    .project:hover {
-      transform: translate(-4px, -4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--lavender);
-      background: var(--panel-2);
-    }
-
-    .project::after {
-      content: '//';
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--dim);
-    }
-
-    .project h3 {
-      font-size: clamp(1.1rem, 3.5vw, 1.7rem);
-      margin-bottom: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      hyphens: auto;
-    }
-
-    .project p {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.85;
-      margin-bottom: 1.2rem;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .tag {
-      background: var(--panel-3);
-      border: 2px solid var(--border);
-      color: var(--lavender);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.25rem 0.5rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* ─── COMMIT PANEL ────────────────────────────────────── */
-    .commit-panel {
-      border: 2px solid var(--border);
-      background: var(--bg-alt);
-      box-shadow: var(--shadow-lg);
-      transform: rotate(-0.3deg);
-      font-family: 'DM Mono', monospace;
-    }
-
-    .commit-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 1rem 1.3rem;
-      border-bottom: 2px solid var(--border);
-      background: var(--panel);
-    }
-
-    .commit-header h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      font-family: 'DM Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--lavender);
-    }
-
-    .commit-status {
-      color: var(--cyan);
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
-    }
-
-    .commit-item {
-      display: grid;
-      grid-template-columns: 150px 1fr auto;
-      gap: 1rem;
-      padding: 1rem 1.3rem;
-      border-bottom: 1px solid var(--line);
-      align-items: center;
-    }
-
-    .commit-item:last-child { border-bottom: none; }
-
-    .repo-name {
-      color: var(--pink);
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-    }
-
-    .commit-message strong {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 500;
-      font-size: 0.85rem;
-    }
-
-    .commit-message span {
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-
-    .commit-link {
-      border: 2px solid var(--border);
-      background: var(--panel);
-      color: var(--lavender);
-      padding: 0.45rem 0.7rem;
-      font-size: 0.72rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      box-shadow: var(--shadow-sm);
-      transition: 100ms linear;
-    }
-
-    .commit-link:hover {
-      border-color: var(--lavender);
-      background: var(--panel-2);
-      transform: translate(-2px,-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* ─── FOOTER ──────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 3rem 0;
-      margin-top: 2rem;
-      color: var(--dim);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 2rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      line-height: 1.9;
-    }
-
-    footer a:hover { color: var(--muted); }
-
-    /* ─── RESPONSIVE ──────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-      .hero-ascii { display: none; }
-      .commit-item { grid-template-columns: 1fr; }
-      .info-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px) {
-      .nav { flex-direction: column; align-items: flex-start; }
-      h1 { font-size: 3.2rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMMONFORM — independent systems workshop</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Arvo:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap">
+<style>
+
+  :root{
+    --bg: #17160F;
+    --bg-alt: #1D1B13;
+    --panel: #1F1D16;
+    --cream: #EDE6D6;
+    --gold: #D8A03A;
+    --teal: #2E7D6B;
+    --rust: #B85C38;
+    --muted: #8A8477;
+    --line: #3B3728;
+    --maxw: 1080px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Arvo', serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+
+  .wrap{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .mono{
+    font-family: 'Space Mono', monospace;
+  }
+
+  .eyebrow{
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .bands{
+    display: flex;
+    gap: 3px;
+  }
+  .bands span{
+    height: 5px;
+    flex: 1;
+  }
+  .bands .t{ background: var(--teal); }
+  .bands .g{ background: var(--gold); }
+  .bands .r{ background: var(--rust); }
+  .bands .c{ background: var(--cream); }
+
+  /* ---------- NAV ---------- */
+
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(23,22,15,0.92);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: none;
+  }
+
+  nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+  }
+
+  .brand{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark{
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bungee Shade', sans-serif;
+    font-size: 18px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .brand-word{
+    font-family: 'Bungee Shade', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--gold);
+  }
+
+  .navlinks{
+    display: flex;
+    gap: 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .navlinks a{
+    text-decoration: none;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    padding-bottom: 4px;
+    transition: color .15s, border-color .15s;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{
+    color: var(--gold);
+    border-color: var(--gold);
+    outline: none;
+  }
+
+  /* ---------- HERO ---------- */
+
+  .hero{
+    padding: 76px 0 64px;
+  }
+  .hero-grid{
+    display: grid;
+    grid-template-columns: 1.35fr 0.9fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .hero .bands{ width: 260px; margin-bottom: 22px; }
+
+  .hero-eyebrow{
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  h1{
+    font-family: 'Arvo', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(34px, 4.6vw, 54px);
+    line-height: 1.12;
+    margin: 0 0 24px;
+    color: var(--cream);
+  }
+  h1 em{
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .lede{
+    max-width: 54ch;
+    color: var(--cream);
+    opacity: .92;
+    font-size: 17px;
+    margin-bottom: 30px;
+  }
+
+  .taglist{
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .taglist span::after{
+    content: " · ";
+    color: var(--line);
+  }
+  .taglist span:last-child::after{ content: ""; }
+
+  .ctas{
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn{
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    padding: 13px 22px;
+    border-radius: 6px;
+    border: 2px solid var(--gold);
+    transition: background .15s, color .15s;
+  }
+  .btn.solid{
+    background: var(--gold);
+    color: var(--bg);
+  }
+  .btn.solid:hover{ background: #eab659; }
+  .btn.ghost{
+    color: var(--gold);
+    background: transparent;
+  }
+  .btn.ghost:hover{ background: rgba(216,160,58,.12); }
+
+  /* ---------- STATUS PLATE ---------- */
+
+  .plate{
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 22px 24px;
+    background: var(--panel);
+  }
+
+  .plate-title{
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal);
+    display: inline-block;
+  }
+
+  .plate-row{
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 12.5px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .plate-row:last-child{ border-bottom: none; }
+  .plate-row .k{ color: var(--muted); letter-spacing: 1px; }
+  .plate-row .v{ color: var(--cream); letter-spacing: 1px; }
+
+  /* ---------- NOTES TICKER ---------- */
+
+  .notes{
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0;
+  }
+  .notes .wrap{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 40px;
+  }
+  .note-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    letter-spacing: .5px;
+  }
+  .note-item .ray{
+    width: 10px; height: 10px;
+    border: 2px solid var(--rust);
+    border-radius: 2px;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+
+  section{ padding: 88px 0; }
+  section.tight{ padding: 64px 0; }
+
+  .section-head{
+    margin-bottom: 44px;
+    max-width: 68ch;
+  }
+  .section-head .eyebrow{ margin-bottom: 12px; }
+  h2{
+    font-family: 'Arvo', serif;
+    font-weight: 700;
+    font-size: clamp(26px, 3.4vw, 36px);
+    margin: 0 0 14px;
+    color: var(--cream);
+  }
+  .section-head p{
+    color: var(--muted);
+    font-size: 15.5px;
+    max-width: 60ch;
+  }
+
+  /* ---------- PROJECT GRID ---------- */
+
+  .projects{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+
+  .card{
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    padding: 26px 26px 24px;
+    background: var(--panel);
+    transition: border-color .15s;
+    position: relative;
+  }
+  .card:hover{ border-color: var(--gold); }
+
+  .card .bands{ width: 60px; margin-bottom: 16px; }
+
+  .card h3{
+    font-family: 'Arvo', serif;
+    font-weight: 700;
+    font-size: 21px;
+    margin: 0 0 10px;
+    color: var(--cream);
+  }
+  .card p{
+    color: var(--muted);
+    font-size: 14.5px;
+    margin: 0 0 18px;
+  }
+
+  .chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip{
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+  .chip.teal{ color: var(--teal); border-color: var(--teal); }
+  .chip.rust{ color: var(--rust); border-color: var(--rust); }
+  .chip.gold{ color: var(--gold); border-color: var(--gold); }
+
+  /* ---------- ACTIVITY ---------- */
+
+  .readout{
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    padding: 0;
+    overflow: hidden;
+  }
+  .readout-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px dashed var(--line);
+    font-family: 'Space Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .readout-body{
+    padding: 34px 20px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .readout-body strong{ color: var(--gold); display:block; margin-bottom: 6px; font-size: 14px;}
+
+  .feed{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+  .feed-item{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'Space Mono', monospace;
+    font-size: 12.5px;
+  }
+  .feed-item:last-child{ border-bottom: none; }
+  .feed-repo{
+    color: var(--gold);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .feed-msg{
+    color: var(--cream);
+    opacity: .9;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .feed-time{
+    color: var(--muted);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 600px){
+    .feed-item{ flex-wrap: wrap; }
+    .feed-msg{ white-space: normal; order: 3; width: 100%; }
+  }
+
+  .retry{
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* ---------- PHILOSOPHY ---------- */
+
+  .philosophy{
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 48px 40px;
+    text-align: center;
+    background: var(--panel);
+  }
+  .philosophy .bands{ width: 200px; margin: 0 auto 26px; }
+  .philosophy ul{
+    list-style: none;
+    margin: 0; padding: 0;
+    font-family: 'Arvo', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2.4vw, 21px);
+    color: var(--cream);
+  }
+  .philosophy li{ margin-bottom: 12px; }
+  .philosophy li:last-child{ margin-bottom: 0; }
+
+  /* ---------- FOOTER ---------- */
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 48px 0 60px;
+  }
+  .foot-grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .foot-brand{
+    font-family: 'Bungee Shade', sans-serif;
+    font-size: 18px;
+    color: var(--gold);
+  }
+  .foot-sub{
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .foot-links{
+    display: flex;
+    gap: 22px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12.5px;
+  }
+  .foot-links a{ text-decoration: none; color: var(--muted); }
+  .foot-links a:hover{ color: var(--gold); }
+
+  @media (max-width: 860px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .projects{ grid-template-columns: 1fr; }
+    .navlinks{ display: none; }
+  }
+
+  @media (max-width: 600px){
+    .foot-grid{ align-items: flex-start; }
+    .plate-row{ flex-wrap: wrap; gap: 2px; }
+  }
+
+</style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <nav class="nav">
-        <div class="brand">
-          <div class="brand-title">COMMONFORM.EXE<span class="cursor"></span></div>
-          <div class="brand-subtitle">// independent systems workshop</div>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-word">COMMONFORM</div>
+      </div>
+      <div class="navlinks">
+        <a href="https://discuss.commonform.io">Forums</a>
+        <a href="https://github.com/commonformhq">Repositories</a>
+        <a href="#projects">Projects</a>
+        <a href="#activity">Activity</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
+          <div class="hero-eyebrow">independent systems workshop</div>
+          <h1>Software built carefully,<br><em>without permission.</em></h1>
+          <p class="lede">
+            Commonform is a small independent software workshop focused on communications
+            infrastructure, privacy tooling, protocol research, and durable self-hosted
+            systems. The goal is not scale at all costs — the goal is software that
+            remains understandable years later.
+          </p>
+          <div class="taglist">
+            <span>independent</span><span>human-maintained</span><span>long-term systems</span>
+          </div>
+          <div class="ctas">
+            <a class="btn solid" href="https://github.com/commonformhq">Browse Repositories</a>
+            <a class="btn ghost" href="https://discuss.commonform.io">Join Discussions</a>
+          </div>
         </div>
 
-        <div class="nav-links">
-          <a href="https://discuss.commonform.io" target="_blank" rel="noopener noreferrer">Forums</a>
-          <a href="https://github.com/commonformhq" target="_blank" rel="noopener noreferrer">Repositories</a>
-          <a href="#projects">Projects</a>
-          <a href="#activity">Activity</a>
+        <div class="plate">
+          <div class="plate-title">
+            <span>Public Node</span>
+            <span class="dot" aria-hidden="true"></span>
+          </div>
+          <div class="plate-row"><span class="k">STATUS</span><span class="v">INDEPENDENT</span></div>
+          <div class="plate-row"><span class="k">BUILD</span><span class="v">MAINTAINED MANUALLY</span></div>
+          <div class="plate-row"><span class="k">ACCESS</span><span class="v">OPEN</span></div>
+          <div class="plate-row"><span class="k">UPTIME</span><span class="v">ONGOING</span></div>
         </div>
-      </nav>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main class="container">
-    <section class="hero">
-      <div class="hero-ascii">
-<pre>╔════════════════════════════════╗
-║ COMMONFORM // PUBLIC NODE      ║
-║ STATUS: INDEPENDENT            ║
-║ BUILD: MAINTAINED MANUALLY     ║
-║ ACCESS: OPEN                   ║
-╚════════════════════════════════╝</pre>
-      </div>
+  <div class="notes">
+    <div class="wrap">
+      <div class="note-item"><span class="ray"></span>infrastructure should remain understandable</div>
+      <div class="note-item"><span class="ray"></span>public repositories synchronized</div>
+      <div class="note-item"><span class="ray"></span>documentation written for humans first</div>
+      <div class="note-item"><span class="ray"></span>maintaining systems intended to last</div>
+    </div>
+  </div>
 
-      <div>
-        <div class="eyebrow">pastel infrastructure • repairable systems • independent software</div>
-
-        <h1>
-          Software built<br>
-          carefully,<br>
-          <span class="highlight">without permission.</span>
-        </h1>
-
-        <p class="hero-copy">
-          Commonform is a small independent software workshop focused on communications
-          infrastructure, privacy tooling, protocol research, and durable self-hosted
-          systems. The goal is not scale at all costs. The goal is software that remains
-          understandable years later.
-        </p>
-
-        <div class="hero-tags">
-          <span class="hero-tag cyan">independent web</span>
-          <span class="hero-tag pink">human-maintained</span>
-          <span class="hero-tag lav">long-term systems</span>
-        </div>
-
-        <div class="hero-buttons">
-          <a class="button primary" href="https://github.com/commonformhq" target="_blank" rel="noopener noreferrer">Browse Repositories</a>
-          <a class="button" href="https://discuss.commonform.io" target="_blank" rel="noopener noreferrer">Join Discussions</a>
-        </div>
-      </div>
-
-      <aside class="notes-panel">
-        <p><span class="accent-cyan">[notes]</span> infrastructure should remain understandable.</p>
-        <p>public repositories synchronized.</p>
-        <p>documentation written for humans first.</p>
-        <p>maintaining systems intended to last.</p>
-        <p><span class="accent-pink">status:</span> active development.</p>
-      </aside>
-    </section>
-
-    <section>
-      <div class="info-box" style="transform:rotate(-0.3deg); max-width:860px;">
-        <h4>notes.txt</h4>
-        <p>
-          Commonform is intentionally small. Most projects are written incrementally over long
-          periods of time rather than optimized for launch cycles, engagement metrics, or trend
-          alignment.
-        </p>
-      </div>
-    </section>
-
-    <section id="projects">
-      <div class="section-title">
-        <h2><span class="label">// projects.list</span>Projects & Subsidiaries</h2>
-        <p>
-          Current work ranges from federated communications systems and privacy infrastructure
-          to payment protocols and experimental automation tooling.
-        </p>
+  <section id="projects" class="tight">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">// projects.list</div>
+        <h2>Projects &amp; Subsidiaries</h2>
+        <p>Current work ranges from federated communications systems and privacy
+        infrastructure to payment protocols and experimental automation tooling.</p>
       </div>
 
       <div class="projects">
-        <article class="project">
+        <div class="card">
+          <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
           <h3>AsterChat</h3>
           <p>Federated communications platform designed around self-hosting, extensibility, and durable message delivery.</p>
-          <div class="tags">
-            <span class="tag">Messaging</span>
-            <span class="tag">Federation</span>
-            <span class="tag">Tauri</span>
+          <div class="chips">
+            <span class="chip teal">Messaging</span>
+            <span class="chip gold">Federation</span>
+            <span class="chip rust">Tauri</span>
           </div>
-        </article>
+        </div>
 
-        <article class="project">
+        <div class="card">
+          <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
           <h3>VeriFi</h3>
           <p>Independent anti-abuse verification platform focused on privacy-preserving human verification systems.</p>
-          <div class="tags">
-            <span class="tag">Security</span>
-            <span class="tag">Privacy</span>
-            <span class="tag">Web</span>
+          <div class="chips">
+            <span class="chip rust">Security</span>
+            <span class="chip teal">Privacy</span>
+            <span class="chip gold">Web</span>
           </div>
-        </article>
+        </div>
 
-        <article class="project">
+        <div class="card">
+          <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
           <h3>SecureIRC</h3>
           <p>Encrypted IRC-inspired communications stack with federation support and modern cryptography.</p>
-          <div class="tags">
-            <span class="tag">IRC</span>
-            <span class="tag">Encryption</span>
-            <span class="tag">Rust</span>
+          <div class="chips">
+            <span class="chip teal">IRC</span>
+            <span class="chip rust">Encryption</span>
+            <span class="chip gold">Rust</span>
           </div>
-        </article>
+        </div>
 
-        <article class="project">
+        <div class="card">
+          <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
           <h3>Cardinal Protocol</h3>
           <p>Experimental programmable payments and escrow infrastructure for digital asset ecosystems.</p>
-          <div class="tags">
-            <span class="tag">Payments</span>
-            <span class="tag">Fintech</span>
-            <span class="tag">Soroban</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="activity">
-      <div class="section-title">
-        <h2><span class="label">// commit_stream.log</span>Repository Activity</h2>
-        <p>
-          Recent commits retrieved from the Gitea instance via public API.
-        </p>
-      </div>
-
-      <div class="commit-panel">
-        <div class="commit-header">
-          <h3>Global Commit Stream</h3>
-          <div class="commit-status" id="commit-status">initializing feed...</div>
-        </div>
-
-        <div id="commit-list">
-          <div class="commit-item">
-            <div class="repo-name">system</div>
-            <div class="commit-message">
-              <strong>Waiting for repository activity...</strong>
-              <span>The feed will update automatically.</span>
-            </div>
-            <div class="commit-link">booting</div>
+          <div class="chips">
+            <span class="chip gold">Payments</span>
+            <span class="chip teal">Fintech</span>
+            <span class="chip rust">Soroban</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="info-grid">
-        <div class="info-box">
-          <h4>philosophy.txt</h4>
-          <p>
-            software should be inspectable.<br>
-            infrastructure should be ownable.<br>
-            protocols should outlive trends.<br>
-            communities should not depend on platforms.
-          </p>
-        </div>
-
-        <div class="info-box" style="transform:rotate(0.3deg);">
-          <h4 style="color:var(--pink);">network_status.txt</h4>
-          <p>
-            repositories synchronized.<br>
-            forum node reachable.<br>
-            experimental systems active.<br>
-            documentation in progress.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div>
-        COMMONFORM.EXE<br>
-        built slowly and maintained manually.
+  <section id="activity" class="tight">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">// commit_stream.log</div>
+        <h2>Repository Activity</h2>
+        <p>Recent commits retrieved from the Gitea instance via public API.</p>
       </div>
 
+      <div class="readout">
+        <div class="readout-bar">
+          <span>Global Commit Stream</span>
+          <span>System</span>
+        </div>
+        <div class="readout-body" id="activity-feed">
+          <strong>Connecting…</strong>
+          reading commonformhq/* via the GitHub public events API.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="philosophy">
+        <div class="bands"><span class="t"></span><span class="g"></span><span class="r"></span><span class="c"></span></div>
+        <ul>
+          <li>software should be inspectable.</li>
+          <li>infrastructure should be ownable.</li>
+          <li>protocols should outlive trends.</li>
+          <li>communities should not depend on platforms.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
       <div>
-        <a href="https://github.com/commonformhq">github.com/commonformhq</a><br>
+        <div class="foot-brand">COMMONFORM</div>
+        <div class="foot-sub">built slowly and maintained manually.</div>
+      </div>
+      <div class="foot-links">
+        <a href="https://github.com/commonformhq">github.com/commonformhq</a>
         <a href="https://discuss.commonform.io">discuss.commonform.io</a>
       </div>
-    </footer>
-  </main>
+    </div>
+  </div>
+</footer>
 
-  <script>
-    const GITEA_BASE = 'https://repo.commonform.io';
+<script>
+(function(){
+  var ORG = 'commonformhq';
+  var API = 'https://api.github.com/orgs/' + ORG + '/events?per_page=30';
+  var el = document.getElementById('activity-feed');
 
-    const repositories = [
-      { owner: 'commonform', repo: 'asterchat' },
-      { owner: 'commonform', repo: 'verifi' },
-      { owner: 'commonform', repo: 'secureirc' },
-      { owner: 'commonform', repo: 'corepilot' }
+  function timeAgo(iso){
+    var diff = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    var units = [
+      [60, 's'], [60, 'm'], [24, 'h'], [30, 'd'], [12, 'mo']
     ];
-
-    const commitList = document.getElementById('commit-list');
-    const commitStatus = document.getElementById('commit-status');
-
-    async function requestJson(url) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          mode: 'cors',
-          headers: { 'Accept': 'application/json' },
-          signal: controller.signal
-        });
-        clearTimeout(timeout);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
-      } finally {
-        clearTimeout(timeout);
-      }
+    var val = diff, label = 's';
+    for (var i = 0; i < units.length; i++){
+      if (val < units[i][0]) { label = units[i][1]; break; }
+      val = val / units[i][0];
+      label = units[i][1];
     }
+    return Math.floor(val) + label + ' ago';
+  }
 
-    async function fetchCommits() {
-      commitStatus.textContent = 'syncing repositories...';
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
 
-      const requests = repositories.map(async repository => {
-        const url = `${GITEA_BASE}/api/v1/repos/${repository.owner}/${repository.repo}/commits?limit=3`;
-        try {
-          const commits = await requestJson(url);
-          return commits.map(commit => ({
-            repository: repository.repo,
-            message: commit.commit?.message?.split('\n')[0] || 'commit update',
-            author: commit.commit?.author?.name || 'unknown',
-            date: commit.commit?.author?.date || new Date().toISOString(),
-            sha: commit.sha || 'unknown',
-            url: commit.html_url || '#'
-          }));
-        } catch (error) {
-          console.warn(`Unable to fetch ${repository.repo}:`, error.message);
-          return [];
-        }
+  function eventLine(e){
+    var repo = e.repo ? e.repo.name.replace(ORG + '/', '') : 'unknown';
+    var msg = '';
+    switch (e.type) {
+      case 'PushEvent':
+        var commits = (e.payload && e.payload.commits) || [];
+        var n = commits.length || (e.payload && e.payload.size) || 0;
+        var last = commits.length ? commits[commits.length - 1].message.split('\n')[0] : 'pushed';
+        msg = n > 1 ? (n + ' commits — ' + last) : last;
+        break;
+      case 'CreateEvent':
+        msg = 'created ' + (e.payload.ref_type || 'ref') + (e.payload.ref ? ' "' + e.payload.ref + '"' : '');
+        break;
+      case 'PullRequestEvent':
+        msg = e.payload.action + ' pull request #' + e.payload.number + ' — ' + (e.payload.pull_request.title || '');
+        break;
+      case 'IssuesEvent':
+        msg = e.payload.action + ' issue #' + e.payload.issue.number + ' — ' + (e.payload.issue.title || '');
+        break;
+      case 'ReleaseEvent':
+        msg = 'released ' + (e.payload.release.tag_name || '');
+        break;
+      case 'WatchEvent':
+        msg = 'starred';
+        break;
+      case 'ForkEvent':
+        msg = 'forked';
+        break;
+      default:
+        msg = e.type.replace('Event', '').toLowerCase();
+    }
+    return { repo: repo, msg: msg, time: e.created_at };
+  }
+
+  function render(events){
+    if (!events.length){
+      el.innerHTML = '<strong>No recent activity.</strong>public repositories are synchronized but quiet right now.';
+      return;
+    }
+    var rows = events.slice(0, 10).map(function(e){
+      var line = eventLine(e);
+      return '<li class="feed-item">' +
+        '<span class="feed-repo">' + escapeHtml(line.repo) + '</span>' +
+        '<span class="feed-msg">' + escapeHtml(line.msg) + '</span>' +
+        '<span class="feed-time">' + timeAgo(line.time) + '</span>' +
+        '</li>';
+    }).join('');
+    el.innerHTML = '<ul class="feed">' + rows + '</ul>';
+  }
+
+  function fail(message){
+    el.innerHTML = '<strong>Feed unavailable.</strong>' + escapeHtml(message) +
+      '<br><button class="retry" id="feed-retry">retry</button>';
+    var btn = document.getElementById('feed-retry');
+    if (btn) btn.addEventListener('click', load);
+  }
+
+  function load(){
+    el.innerHTML = '<strong>Connecting…</strong>reading ' + ORG + '/* via the GitHub public events API.';
+    fetch(API, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function(res){
+        if (res.status === 403 || res.status === 429) throw new Error('rate limited — try again shortly.');
+        if (!res.ok) throw new Error('GitHub returned ' + res.status + '.');
+        return res.json();
+      })
+      .then(function(events){
+        if (!Array.isArray(events)) throw new Error('unexpected response shape.');
+        render(events);
+      })
+      .catch(function(err){
+        fail(err.message || 'could not reach the feed.');
       });
+  }
 
-      const results = await Promise.allSettled(requests);
-      const commits = [];
-      results.forEach(result => {
-        if (result.status === 'fulfilled') commits.push(...result.value);
-      });
-      commits.sort((a, b) => new Date(b.date) - new Date(a.date));
+  load();
+})();
+</script>
 
-      if (!commits.length) { renderFallback(); return; }
-      renderCommits(commits.slice(0, 16));
-      commitStatus.textContent = `live feed active • ${commits.length} commits indexed`;
-    }
-
-    function renderFallback() {
-      commitStatus.textContent = 'repository feed unavailable';
-      commitList.innerHTML = `
-        <div class="commit-item">
-          <div class="repo-name">offline</div>
-          <div class="commit-message">
-            <strong>Unable to retrieve repository activity.</strong>
-            <span>Repositories may not exist yet, the Gitea API may be unreachable, or CORS is disabled on the server.</span>
-          </div>
-          <div class="commit-link">idle</div>
-        </div>
-      `;
-    }
-
-    function renderCommits(commits) {
-      commitList.innerHTML = commits.map(commit => `
-        <div class="commit-item">
-          <div class="repo-name">${escapeHtml(commit.repository)}</div>
-          <div class="commit-message">
-            <strong>${escapeHtml(commit.message)}</strong>
-            <span>${escapeHtml(commit.author)} • ${formatDate(commit.date)} • ${commit.sha.substring(0, 7)}</span>
-          </div>
-          <a class="commit-link" href="${commit.url}" target="_blank" rel="noopener noreferrer">view →</a>
-        </div>
-      `).join('');
-    }
-
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'unknown date';
-      return new Intl.DateTimeFormat(undefined, {
-        year: 'numeric', month: 'short', day: 'numeric',
-        hour: 'numeric', minute: '2-digit'
-      }).format(date);
-    }
-
-    function escapeHtml(input) {
-      const div = document.createElement('div');
-      div.textContent = String(input);
-      return div.innerHTML;
-    }
-
-    fetchCommits();
-    setInterval(fetchCommits, 30000);
-  </script>
 </body>
 </html>
